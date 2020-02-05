@@ -18,4 +18,8 @@ Steps for restoring a session:
 1) Open multiple tabs from browser stored in a session
 2) Open Multiple software stored in a session
 
+next steps:
+- close all the apps in the session
+- create an ignore file
+
 
