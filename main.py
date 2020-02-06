@@ -1,124 +1,150 @@
-import os, sys
-import webbrowser
-import pathlib
-import clipboard
-import psutil
-import subprocess
+import os, sys, webbrowser, pathlib, clipboard, psutil, subprocess
 
 current_directory = os.getcwd()
+class App():
 
-def save_tabs(session_name):
-    text_in_clipboard = clipboard.paste()
-    os.chdir(current_directory)
-    with open(session_name + '-browser.txt', "w") as text_file:
-        text_file.write("%s" % text_in_clipboard)
-    os.chdir(current_directory)
+    def __init__(self, session_name):
+        self.session_name = session_name
 
-def reload_tabs(session_name):
-    os.chdir(current_directory)
-    with open(session_name + '-browser.txt', "r") as text_file:
-        for l in text_file:
-            webbrowser.get('chrome').open_new_tab(l)
-    os.chdir(current_directory)
+    def save_tabs(self):
+        text_in_clipboard = clipboard.paste()
+        os.chdir(current_directory)
+        with open(self.session_name + '-browser.txt', "w") as text_file:
+            text_file.write("%s" % text_in_clipboard)
+        os.chdir(current_directory)
 
-def save_running_software(session_name):
-    apps_location = '/Users/nikandrosmavroudakis'
+    def reload_tabs(self):
+        os.chdir(current_directory)
+        with open(self.session_name + '-browser.txt', "r") as text_file:
+            for l in text_file:
+                webbrowser.get('chrome').open_new_tab(l)
+        os.chdir(current_directory)
 
-    os.chdir(apps_location)
+    def save_running_software(self):
+        apps_location = '/Users/nikandrosmavroudakis'
 
-    application_folder = os.listdir('/Applications')
+        os.chdir(apps_location)
 
-    # Clearing App Name From The Extension
-    application_folder = [f.split('.')[0] for f in application_folder if '.app' in f] # might be useless
+        application_folder = os.listdir('/Applications')
 
-    os.chdir(current_directory)
+        # Removing The Extension From The App Name
+        application_folder = [f.split('.')[0] for f in application_folder if '.app' in f]
 
-    with open(session_name + '-software.txt', "w") as text_file:
-        for proc in psutil.process_iter(attrs=['pid', 'name']):
-            running_app = proc.info['name']
+        os.chdir(current_directory)
 
-            if running_app in application_folder:
-                text_file.write("%s\n" % running_app)
+        with open(self.session_name + '-software.txt', "w") as text_file:
+            for app in self.running_apps():
+                text_file.write("%s\n" % app)
 
-def reload_running_software(session_name):
-    apps_to_be_loaded = list()
+    def reload_running_software(self):
+        apps_to_be_loaded = list()
 
-    with open(session_name + '-software.txt', "r") as text_file:
-        for application in text_file:
-            apps_to_be_loaded.append(application.split('\n')[0] + '.app')
-    
-    apps_location = '/Users/nikandrosmavroudakis/Applications/'
+        with open(self.session_name + '-software.txt', "r") as text_file:
+            for application in text_file:
+                apps_to_be_loaded.append(application.split('\n')[0] + '.app')
+        
+        apps_location = '/Users/nikandrosmavroudakis/Applications/'
 
-    os.chdir(apps_location)
+        os.chdir(apps_location)
 
-    for app in apps_to_be_loaded:
-        open_app = 'open -a ' + app.replace(' ', r'\ ')
-        os.system(open_app)
-        # print(asdf) osascript -e 'quit app "Calendar"'
+        for app in apps_to_be_loaded:
+            open_app = 'open -a ' + app.replace(' ', r'\ ')
+            os.system(open_app)
+
+    def save(self):
+
+        if self.session_name == '':
+            print('Error: session -s [name]')
+            return
+
+        # TODO: before running overriding the files make sure that the clipboard contains links, minimum number 3
+
+        self.save_tabs() # works
+        self.save_running_software() # works
+
+        # close all running apps other than the ignored
+        # osascript -e 'quit app "Calendar"'
+
+    def reload(self):
+
+        if self.session_name == '':
+            print('Error: session -r [name]')
+            return
+
+        self.reload_tabs() # works
+        self.reload_running_software() # works
+
+    def ignore(self):
+
+        application_name = self.session_name
+
+        if application_name == '':
+            self.show_all_running_apps()
+            print('Choose an app of the above to ignore')
+        else:
+            # check in applications folder if app exists
+            # add to ignore file if it is
+
+            print(self.running_apps())
+            print(application_name)
+
+            if application_name in self.running_apps():
+
+                os.chdir(current_directory)
+
+                load_from_file = list()
+
+                print('Ignore: ' + application_name)
+                # create ignore file
+                if os.path.isfile('.ignore'):
+                    with open('.ignore', "r") as text_file:
+                        for application in text_file:
+                            load_from_file.append(application)
+
+                load_from_file.append(application_name)
+
+                with open('.ignore', "w") as text_file:
+                    for application in load_from_file:
+                        text_file.write("%s\n" % application)
+        
+            else:
+                print('You can ignore only running apps.')
 
 
+    def running_apps(self, placeholder=None):
+        apps_location = '/Users/nikandrosmavroudakis'
 
-def save(session_name):
+        os.chdir(apps_location)
 
-    if session_name == '':
-        print('Error: session -s [name]')
-        return
+        application_folder = os.listdir('/Applications')
 
-    save_tabs(session_name) # works
-    save_running_software(session_name) # works
+        # Clearing App Name From The Extension
+        application_folder = [f.split('.')[0] for f in application_folder if '.app' in f] # might be useless
 
-def reload(session_name):
+        return [proc.info['name'] for proc in psutil.process_iter(attrs=['pid', 'name']) if proc.info['name'] in application_folder]
 
-    if session_name == '':
-        print('Error: session -r [name]')
-        return
+    def show_all_running_apps(self, placeholder=None):
+        for app in self.running_apps():
+            print(app)
 
-    reload_tabs(session_name) # works
-    reload_running_software(session_name) # works
+    def list_active_sessions(self, placeholder=None):
+        print('List all stored sessions')
 
-def ignore(application):
-
-    if application == '':
-        running_apps()
-        print('Choose an app of the above to ignore')
-    else:
-        # check in applications folder if app exists
-        # add to ignore file if it is
-        print('Ignore: ' + application)
-        print('You can ignore only running apps.')
-
-def running_apps(placeholder=None):
-    apps_location = '/Users/nikandrosmavroudakis'
-
-    os.chdir(apps_location)
-
-    application_folder = os.listdir('/Applications')
-
-    # Clearing App Name From The Extension
-    application_folder = [f.split('.')[0] for f in application_folder if '.app' in f] # might be useless
-
-    for proc in psutil.process_iter(attrs=['pid', 'name']):
-        running_app = proc.info['name']
-        if running_app in application_folder:
-            print("%s" % running_app)
-
-def list_active_sessions(placeholder=None):
-    print('List all stored sessions')
-
-def func_switch(argument, session_name):
-    switcher = {
-        '-s': save,
-        '-r': reload,
-        '-i': ignore,
-        '-a': running_apps,
-        '-la': list_active_sessions
-    }
-    # Get the function from switcher dictionary
-    func = switcher.get(argument, lambda: "nothing")
-    # Execute the function
-    return func(session_name)
+    def func_switch(self, argument):
+        switcher = {
+            '-s': self.save,
+            '-r': self.reload,
+            '-i': self.ignore,
+            '-a': self.show_all_running_apps,
+            '-la': self.list_active_sessions
+        }
+        # Get the function from switcher dictionary
+        func = switcher.get(argument, lambda: "nothing")
+        # Execute the function
+        return func()
 
 if __name__ == "__main__":
+
     argument = sys.argv[1]
 
     session_name = ''
@@ -128,7 +154,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         session_name = sys.argv[2]
 
-    func_switch(argument, session_name)
+    app = App(session_name)
+
+
+    app.func_switch(argument)
 
     print()
 
