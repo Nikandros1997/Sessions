@@ -199,13 +199,9 @@ class App():
 
 
 if __name__ == "__main__":
-
-    print(len(sys.argv))
     argument = sys.argv[1]
 
     if not argument == '-i':
-        print('UP')
-
         session_name = ''
 
         if len(sys.argv) == 3:
@@ -218,7 +214,6 @@ if __name__ == "__main__":
         ignore_app_name = sys.argv[2]
         session_name = ''
 
-        print('down')
         try:
             argument2 = sys.argv[3]
         except:
