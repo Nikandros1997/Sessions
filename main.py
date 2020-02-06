@@ -2,7 +2,6 @@ import os, sys, webbrowser, pathlib, clipboard, psutil, subprocess
 
 current_directory = os.getcwd()
 class App():
-
 	def __init__(self, session_name):
 		self.session_name = session_name
 
@@ -59,9 +58,14 @@ class App():
 			os.system(open_app)
 
 	def close_apps(self):
+
+		os.chdir(current_directory)
+
 		if os.path.isfile(self.session_name + '-software.ses'):
+			print('close apps')
 			with open(self.session_name + '-software.ses', "r") as text_file:
 				for application in text_file:
+					# print('osascript -e \'quit app "{0}"\''.format(application.split('\n')[0] + '.app'))
 					os.system('osascript -e \'quit app "{0}"\''.format(application.split('\n')[0] + '.app'))
 	
 	def verify_clipboard(self):
@@ -81,6 +85,9 @@ class App():
 			print('Error: session -s [name]')
 			return
 
+		# print(self.running_apps())
+		# return
+
 		if not os.path.isfile('.ignore'):
 			print('Create an ignore file first by running: sh session -i ')
 
@@ -96,8 +103,24 @@ class App():
 			print('Error: session -r [name]')
 			return
 
-			self.reload_tabs() # works
-			self.reload_running_software() # works
+		self.reload_tabs() # works
+		self.reload_running_software() # works
+
+	def reload_file(self, file_name):
+		loaded_from_file = list()
+
+		with open(file_name, "r") as text_file:
+			for application in text_file:
+				application = application.replace('\n', '')
+				loaded_from_file.append(application)
+
+		return loaded_from_file
+
+	def save_file(self, file_name, data):
+		print('save_file')
+		with open(file_name, "w") as text_file:
+			for application in data:
+				text_file.write("%s\n" % application)
 
 	def ignore(self, file_to_ignore):
 		application_name = file_to_ignore
@@ -115,35 +138,25 @@ class App():
 					load_from_file = list()
 
 					print('Ignore: ' + application_name)
+
 					# create ignore file
 					if os.path.isfile('.ignore'):
-						with open('.ignore', "r") as text_file:
-							for application in text_file:
-								load_from_file.append(application.replace('\n', ''))
+						load_from_file = self.reload_file('.ignore')
 
 					if not application_name in load_from_file:
 						load_from_file.append(application_name)
 					else:
 						print('Application is already ignored')
 
-					with open('.ignore', "w") as text_file:
-						for application in load_from_file:
-							text_file.write("%s\n" % application)
+					self.save_file('.ignore', load_from_file)
 
 					updated_software_list = list()
 
-					print(load_from_file)
+					updated_software_list = self.reload_file(self.session_name + '-software.ses')
 
-					with open(self.session_name + '-software.ses', 'r') as text_file:
-						for app in text_file:
-							if not app.replace('\n', '') in load_from_file:
-								updated_software_list.append(app.replace('\n', ''))
+					updated_software_list = [ app.strip() for app in updated_software_list if not app.strip() in load_from_file]
 
-					with open(self.session_name + '-software.ses', "w") as text_file:
-						for app in updated_software_list:
-							text_file.write("%s\n" % app)
-
-					print(updated_software_list)
+					self.save_file(self.session_name + '-software.ses', updated_software_list)
 				else:
 						print('Session name not registered.')
 			else:
@@ -157,10 +170,10 @@ class App():
 		application_folder = os.listdir('/Applications')
 
 		# Clearing App Name From The Extension
-		application_folder = [f.split('.')[0] for f in application_folder if '.app' in f] # might be useless
+		application_folder = [f.split('.')[0].lower() for f in application_folder if '.app' in f] # might be useless
 
-		return [proc.info['name'] for proc in psutil.process_iter(attrs=['pid', 'name']) if proc.info['name'] in application_folder]
-
+		return [proc.info['name'] for proc in psutil.process_iter(attrs=['pid', 'name']) if proc.info['name'].lower() in application_folder]
+		# return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
 	def show_all_running_apps(self, placeholder=None):
 		for app in self.running_apps():
 			print(app)
@@ -192,7 +205,6 @@ class App():
 			return func(passing)
 		else:
 			return func()
-
 
 if __name__ == "__main__":
 	argument = sys.argv[1]
