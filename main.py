@@ -9,13 +9,13 @@ class App():
     def save_tabs(self):
         text_in_clipboard = clipboard.paste()
         os.chdir(current_directory)
-        with open(self.session_name + '-browser.txt', "w") as text_file:
+        with open(self.session_name + '-browser.ses', "w") as text_file:
             text_file.write("%s" % text_in_clipboard)
         os.chdir(current_directory)
 
     def reload_tabs(self):
         os.chdir(current_directory)
-        with open(self.session_name + '-browser.txt', "r") as text_file:
+        with open(self.session_name + '-browser.ses', "r") as text_file:
             for l in text_file:
                 webbrowser.get('chrome').open_new_tab(l)
         os.chdir(current_directory)
@@ -38,7 +38,7 @@ class App():
                 for app in text_file:
                     ignored_apps.append(app.replace('\n', ''))
 
-        with open(self.session_name + '-software.txt', "w") as text_file:
+        with open(self.session_name + '-software.ses', "w") as text_file:
             for app in self.running_apps():
                 if not app in ignored_apps:
                     text_file.write("%s\n" % app)
@@ -46,7 +46,7 @@ class App():
     def reload_running_software(self):
         apps_to_be_loaded = list()
 
-        with open(self.session_name + '-software.txt', "r") as text_file:
+        with open(self.session_name + '-software.ses', "r") as text_file:
             for application in text_file:
                 apps_to_be_loaded.append(application.split('\n')[0] + '.app')
         
@@ -60,8 +60,8 @@ class App():
 
     def close_apps(self):
 
-        if os.path.isfile(self.session_name + '-software.txt'):
-            with open(self.session_name + '-software.txt', "r") as text_file:
+        if os.path.isfile(self.session_name + '-software.ses'):
+            with open(self.session_name + '-software.ses', "r") as text_file:
                 for application in text_file:
                     os.system('osascript -e \'quit app "{0}"\''.format(application.split('\n')[0] + '.app'))
     
@@ -83,7 +83,7 @@ class App():
             print('Error: session -s [name]')
             return
 
-        if os.path.isfile('.ignore'):
+        if not os.path.isfile('.ignore'):
             print('Create an ignore file first by running: sh session -i ')
 
         # TODO: before running overriding the files make sure that the clipboard contains links, minimum number 3
@@ -118,7 +118,7 @@ class App():
 
                 os.chdir(current_directory)
 
-                if os.path.isfile(self.session_name + '-software.txt'):
+                if os.path.isfile(self.session_name + '-software.ses'):
                     load_from_file = list()
 
                     print('Ignore: ' + application_name)
@@ -141,12 +141,12 @@ class App():
 
                     print(load_from_file)
 
-                    with open(self.session_name + '-software.txt', 'r') as text_file:
+                    with open(self.session_name + '-software.ses', 'r') as text_file:
                         for app in text_file:
                             if not app.replace('\n', '') in load_from_file:
                                 updated_software_list.append(app.replace('\n', ''))
 
-                    with open(self.session_name + '-software.txt', "w") as text_file:
+                    with open(self.session_name + '-software.ses', "w") as text_file:
                         for app in updated_software_list:
                             text_file.write("%s\n" % app)
 
@@ -173,7 +173,15 @@ class App():
             print(app)
 
     def list_active_sessions(self, placeholder=None):
-        print('List all stored sessions')
+        print('Active Sessions:')
+        os.chdir(current_directory)
+
+        application_folder = os.listdir()
+
+        application_folder = list(set([f.split('-')[0] for f in application_folder if f.endswith('.ses')]))
+
+        for session in application_folder:
+            print(session)
 
     def func_switch(self, argument, passing=None):
         switcher = {
