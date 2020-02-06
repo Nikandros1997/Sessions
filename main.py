@@ -86,12 +86,10 @@ class App():
         if not os.path.isfile('.ignore'):
             print('Create an ignore file first by running: sh session -i ')
 
-        # TODO: before running overriding the files make sure that the clipboard contains links, minimum number 3
-        
         if(self.verify_clipboard()):
             self.save_tabs() # works
             self.save_running_software() # works
-            self.close_apps()
+            self.close_apps() # works
         else:
             print('Please check your clipboard')
 
@@ -107,13 +105,12 @@ class App():
     def ignore(self, file_to_ignore):
         application_name = file_to_ignore
 
+        print(file_to_ignore)
+
         if application_name == '':
             self.show_all_running_apps()
             print('Choose an app of the above to ignore')
         else:
-            # check in applications folder if app exists
-            # add to ignore file if it is
-
             if application_name in self.running_apps():
 
                 os.chdir(current_directory)
@@ -218,24 +215,22 @@ if __name__ == "__main__":
 
         app.func_switch(argument)
     else:
-        ignore_app_name = ''
+        ignore_app_name = sys.argv[2]
         session_name = ''
 
         print('down')
-
-        if len(sys.argv) > 3:
-            ignore_app_name = sys.argv[2]
-
+        try:
             argument2 = sys.argv[3]
+        except:
+            print('Something is wrong with the command format')
+            sys.exit(0)
 
-            if not argument2 == '-n':
-                print('Something is wrong with the command format')
-                sys.exit(0)
-            elif len(sys.argv) > 4:
-                session_name = sys.argv[4]
-            else:
-                print('Session name has not been specified')
-                sys.exit(0)
+        
+        try:
+            session_name = sys.argv[4]
+        except:
+            print('Session name has not been specified')
+            sys.exit(0)
 
         app = App(session_name)
 
