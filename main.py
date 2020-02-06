@@ -118,32 +118,43 @@ class App():
 
                 os.chdir(current_directory)
 
-                load_from_file = list()
+                if os.path.isfile(self.session_name + '-software.txt'):
+                    load_from_file = list()
 
-                print('Ignore: ' + application_name)
-                # create ignore file
-                if os.path.isfile('.ignore'):
-                    with open('.ignore', "r") as text_file:
-                        for application in text_file:
-                            load_from_file.append(application.replace('\n', ''))
+                    print('Ignore: ' + application_name)
+                    # create ignore file
+                    if os.path.isfile('.ignore'):
+                        with open('.ignore', "r") as text_file:
+                            for application in text_file:
+                                load_from_file.append(application.replace('\n', ''))
 
-                if not application_name in load_from_file:
-                    load_from_file.append(application_name)
+                    if not application_name in load_from_file:
+                        load_from_file.append(application_name)
+                    else:
+                        print('Application is already ignored')
+
+                    with open('.ignore', "w") as text_file:
+                        for application in load_from_file:
+                            text_file.write("%s\n" % application)
+
+                    updated_software_list = list()
+
+                    print(load_from_file)
+
+                    with open(self.session_name + '-software.txt', 'r') as text_file:
+                        for app in text_file:
+                            if not app.replace('\n', '') in load_from_file:
+                                updated_software_list.append(app.replace('\n', ''))
+
+                    with open(self.session_name + '-software.txt', "w") as text_file:
+                        for app in updated_software_list:
+                            text_file.write("%s\n" % app)
+
+                    print(updated_software_list)
                 else:
-                    print('Application is already ignored')
-
-                with open('.ignore', "w") as text_file:
-                    for application in load_from_file:
-                        text_file.write("%s\n" % application)
-
-                # updated_software_list = list()
-
-                '''with open(self.session_name + '-software.txt', 'r') as text_file:
-                    for app in text_file:
-                        print(app)'''
+                    print('Session name not registered.')
             else:
                 print('You can ignore only running apps.')
-
 
     def running_apps(self, placeholder=None):
         apps_location = '/Users/nikandrosmavroudakis'
@@ -212,8 +223,11 @@ if __name__ == "__main__":
             if not argument2 == '-n':
                 print('Something is wrong with the command format')
                 sys.exit(0)
-            else:
+            elif len(sys.argv) > 4:
                 session_name = sys.argv[4]
+            else:
+                print('Session name has not been specified')
+                sys.exit(0)
 
         app = App(session_name)
 
