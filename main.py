@@ -162,18 +162,19 @@ class App():
 			else:
 					print('You can ignore only running apps.')
 
-	def running_apps(self, placeholder=None):
+	def running_apps(self):
+		return [proc for proc in self.running_processes() if proc in self.installed_apps()]
+    
+	def installed_apps(self):
 		apps_location = '/Users/nikandrosmavroudakis'
 
 		os.chdir(apps_location)
 
-		application_folder = os.listdir('/Applications')
+		return [f.split('.')[0].lower() for f in os.listdir('/Applications') if '.app' in f]
 
-		# Clearing App Name From The Extension
-		application_folder = [f.split('.')[0].lower() for f in application_folder if '.app' in f] # might be useless
-
-		return [proc.info['name'] for proc in psutil.process_iter(attrs=['pid', 'name']) if proc.info['name'].lower() in application_folder]
-		# return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
+	def running_processes(self):
+		return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
+	
 	def show_all_running_apps(self, placeholder=None):
 		for app in self.running_apps():
 			print(app)
