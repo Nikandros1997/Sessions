@@ -106,7 +106,7 @@ class App():
 		self.reload_tabs() # works
 		self.reload_running_software() # works
 
-	def reload_file(self, file_name):
+	def load_file(self, file_name):
 		loaded_from_file = list()
 
 		with open(file_name, "r") as text_file:
@@ -122,10 +122,10 @@ class App():
 			for application in data:
 				text_file.write("%s\n" % application)
 
-	def ignore(self, file_to_ignore):
-		application_name = file_to_ignore
+	def ignore(self, app_to_ignore):
+		application_name = app_to_ignore
 
-		print(file_to_ignore)
+		print(app_to_ignore)
 
 		if application_name == '':
 			self.show_all_running_apps()
@@ -135,32 +135,31 @@ class App():
 				os.chdir(current_directory)
 
 				if os.path.isfile(self.session_name + '-software.ses'):
-					load_from_file = list()
-
 					print('Ignore: ' + application_name)
 
-					# create ignore file
-					if os.path.isfile('.ignore'):
-						load_from_file = self.reload_file('.ignore')
+					apps_to_be_ignored = list()
 
-					if not application_name in load_from_file:
-						load_from_file.append(application_name)
+					if os.path.isfile('.ignore'):
+						apps_to_be_ignored = self.load_file('.ignore')
+
+					if not application_name in apps_to_be_ignored:
+						apps_to_be_ignored.append(application_name)
 					else:
 						print('Application is already ignored')
 
-					self.save_file('.ignore', load_from_file)
+					self.save_file('.ignore', apps_to_be_ignored)
 
 					updated_software_list = list()
 
-					updated_software_list = self.reload_file(self.session_name + '-software.ses')
+					updated_software_list = self.load_file(self.session_name + '-software.ses')
 
-					updated_software_list = [ app.strip() for app in updated_software_list if not app.strip() in load_from_file]
+					updated_software_list = [ app.strip() for app in updated_software_list if not app.strip() in apps_to_be_ignored]
 
 					self.save_file(self.session_name + '-software.ses', updated_software_list)
 				else:
-						print('Session name not registered.')
+					print('Session not registered.')
 			else:
-					print('You can ignore only running apps.')
+				print('You can ignore apps that are currently running.')
 
 	def running_apps(self):
 		output = subprocess.check_output('ps aux|grep ^nikandrosmavroudakis | grep /Applications', shell=True)
@@ -192,8 +191,10 @@ class App():
 		return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
 	
 	def show_all_running_apps(self, placeholder=None):
+		apps_to_be_ignored = self.load_file('.ignore')
+
 		for app in self.running_apps():
-			print(app)
+			print(app, '(Ignored)' if app in apps_to_be_ignored else '')
 
 	def list_active_sessions(self, placeholder=None):
 		print('Active Sessions:')
