@@ -149,11 +149,9 @@ class App():
 
 					self.save_file('.ignore', apps_to_be_ignored)
 
-					updated_software_list = list()
+					old_software_list = self.load_file(self.session_name + '-software.ses')
 
-					updated_software_list = self.load_file(self.session_name + '-software.ses')
-
-					updated_software_list = [ app.strip() for app in updated_software_list if not app.strip() in apps_to_be_ignored]
+					updated_software_list = [ app.strip() for app in old_software_list if not app.strip() in apps_to_be_ignored]
 
 					self.save_file(self.session_name + '-software.ses', updated_software_list)
 				else:
