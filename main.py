@@ -62,7 +62,7 @@ class App():
 		os.chdir(current_directory)
 
 		if os.path.isfile(self.session_name + '-software.ses'):
-			print('close apps')
+			print('closing all apps')
 			with open(self.session_name + '-software.ses', "r") as text_file:
 				for application in text_file:
 					# print('osascript -e \'quit app "{0}"\''.format(application.split('\n')[0] + '.app'))
