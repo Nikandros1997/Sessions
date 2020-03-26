@@ -175,6 +175,9 @@ class App():
 
 		return running_apps
     
+	'''
+		TODO: DEPRECATE
+	'''
 	def installed_apps(self):
 		apps_location = '/Users/nikandrosmavroudakis'
 
@@ -182,6 +185,9 @@ class App():
 
 		return [f.split('.')[0].lower() for f in os.listdir('/Applications') if '.app' in f]
 
+	'''
+		TODO: DEPRECATE
+	'''
 	def running_processes(self):
 		return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
 	
