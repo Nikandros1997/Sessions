@@ -219,8 +219,6 @@ class App():
 		else:
 			return func()
 
-# TODO: Software to Process map (Windows / Mac)
-
 if __name__ == "__main__":
 	argument = sys.argv[1]
 
@@ -254,11 +252,3 @@ if __name__ == "__main__":
 		app.func_switch(argument, ignore_app_name)
 
 		print('')
-
-
-# Commands:
-# -s [name]                         -> saves a session with name [name]
-# -r [name]                         -> reloads a session with name [name]
-# -i [app_name] -n [session_name]   -> ignores from storing in sessions app with name [name], when no [name] is provided lists all running apps
-# -a                                -> shows all running apps
-# -la                               -> lists all active sessions
