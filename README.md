@@ -5,7 +5,8 @@ If you think something is missing from this command, have a look in my [to-dos](
 
 
 # How to use the command:
-sh session [options]
+sh session [options]  
+**Currently, if you want to use the command, you have to go inside the folder and follow the instructions from there.**
 
 # Options:
 -**s** [name]                         -> saves a session with name [name]  
