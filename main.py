@@ -163,7 +163,17 @@ class App():
 					print('You can ignore only running apps.')
 
 	def running_apps(self):
-		return [proc for proc in self.running_processes() if proc in self.installed_apps()]
+		output = subprocess.check_output('ps aux|grep ^nikandrosmavroudakis | grep /Applications', shell=True)
+		running_apps = []
+		# print(output)
+		for line in str(output).split('\\n'):
+			x = line[line.find('/Applications'):]
+			y = x[:x.find('.app')]
+			z = y[y.rfind('/')+1:]
+			if not z in running_apps and z != '' and z != 'Application':
+				running_apps.append(z)
+
+		return running_apps
     
 	def installed_apps(self):
 		apps_location = '/Users/nikandrosmavroudakis'
