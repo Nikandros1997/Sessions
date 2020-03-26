@@ -117,15 +117,12 @@ class App():
 		return loaded_from_file
 
 	def save_file(self, file_name, data):
-		print('save_file')
 		with open(file_name, "w") as text_file:
 			for application in data:
 				text_file.write("%s\n" % application)
 
 	def ignore(self, app_to_ignore):
 		application_name = app_to_ignore
-
-		print(app_to_ignore)
 
 		if application_name == '':
 			self.show_all_running_apps()
