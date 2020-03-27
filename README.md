@@ -12,7 +12,7 @@ sh session [options]
 **Currently, if you want to use the command, you have to go inside the folder and follow the instructions from there. There is a ticket in the todos list to tackle this problem.**
 
 
-Command | What it does
+Options | What it does
 :--- | :---
 -**s** [session_name] | saves a session with name [session_name]
 -**r** [session_name] | reloads a session with name [session_name]
