@@ -13,7 +13,7 @@ sh session [options]
 
 
 Command | What it does
----: | :---
+:--- | :---
 -**s** [session_name] | saves a session with name [session_name]
 -**r** [session_name] | reloads a session with name [session_name]
 -**i** [app_name] -**n** [session_name] | ignores from storing in sessions app with name [name], when no [name] is provided lists all running apps
