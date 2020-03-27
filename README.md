@@ -11,6 +11,15 @@ Firefox: [Copy All Tab Urls](https://addons.mozilla.org/en-GB/firefox/addon/copy
 sh session [options]  
 **Currently, if you want to use the command, you have to go inside the folder and follow the instructions from there.**
 
+
+Command | What it does
+:---: | ---
+-**s** [name] | saves a session with name [name]
+-**r** [name] | reloads a session with name [name]
+-**i** [app_name] -**n**  [session_name] | ignores from storing in sessions app with name [name], when no [name] is provided lists all running apps
+-**a** | shows all running apps
+-**la** [name] | lists all active sessions
+
 # Options:
 -**s** [name]                         -> saves a session with name [name]  
 -**r** [name]                         -> reloads a session with name [name]  
