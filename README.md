@@ -16,6 +16,6 @@ Command | What it does
 :--- | :---
 -**s** [session_name] | saves a session with name [session_name]
 -**r** [session_name] | reloads a session with name [session_name]
--**i** [app_name] -**n** [session_name] | ignores from storing in sessions app with name [name], when no [name] is provided lists all running apps
+-**i** [app_name] -**n** [session_name] | ignores from storing an app in a session with name [app_name], when no [app_name] is provided lists all running apps
 -**a** | shows all running apps
 -**la** [session_name] | lists all active sessions
