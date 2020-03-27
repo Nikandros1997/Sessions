@@ -3,6 +3,9 @@ This is an automation tool that was built with a goal in mind to store work sess
 
 If you think something is missing from this command, have a look in my [to-dos](https://github.com/Nikandros1997/Sessions/projects/1) list to see if something similar to what you want is under development and if not give me your suggestions.
 
+# How to copy all urls:
+Google Chrome: [Copy All Urls](https://chrome.google.com/webstore/detail/copy-all-urls/iiagcalhlpmgdipdcikkjiliaankcagj?hl=en)  
+Firefox: [Copy All Tab Urls](https://addons.mozilla.org/en-GB/firefox/addon/copy-all-tab-urls-we/)
 
 # How to use the command:
 sh session [options]  
