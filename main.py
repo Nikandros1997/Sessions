@@ -190,15 +190,18 @@ class App():
 		for app in self.running_apps():
 			print(app, '(Ignored)' if app in apps_to_be_ignored else '')
 
-	def list_active_sessions(self, placeholder=None):
-		print('Active Sessions:')
+	def get_active_sessions(self):
 		os.chdir(current_directory)
 
 		application_folder = os.listdir()
 
-		application_folder = list(set([f.split('-')[0] for f in application_folder if f.endswith('.ses')]))
+		return list(set([f.split('-')[0] for f in application_folder if f.endswith('.ses')]))
 
-		for session in application_folder:
+
+	def list_active_sessions(self, placeholder=None):
+		print('Active Sessions:')
+
+		for session in self.get_active_sessions():
 			print(session)
 
 	def decouple_apps_from_tabs(self):
@@ -208,8 +211,8 @@ class App():
 		# if browser file exists
 		if self.can_store_tabs():
 			print('Are you sure that you don\'t want to store the browser\'s tabs anymore?')
-			asdf = input()
-			if asdf == 'y':
+			answer = input()
+			if answer == 'y':
 				if os.path.isfile(self.session_name + '-browser.ses'):
 					os.remove(self.session_name + '-browser.ses')
 				else:
@@ -219,11 +222,29 @@ class App():
 		# else if browser file does not exist
 		else:
 			print('Do you want to start being able to store the browser\'s tabs in the session?')
-			asdf = input()
-			if asdf == 'y':
+			answer = input()
+			if answer == 'y':
 				open(self.session_name + '-browser.ses', 'w')
 			else:
 				print('no changes applied')
+
+	def show_only_apps_not_ignored(self):
+		apps_to_be_ignored = self.load_file('.ignore')
+
+		formatted_string = ''
+
+		for app in self.running_apps():
+			if not app in apps_to_be_ignored:
+				formatted_string += app + ','
+		print(formatted_string)
+
+	def show_active_sessions(self):
+		formatted_string = ''
+
+		for session in self.get_active_sessions():
+			formatted_string += session + ','
+		print(formatted_string)
+
 
 	def func_switch(self, argument, passing=None):
 		switcher = {
@@ -231,6 +252,8 @@ class App():
 			'-r': self.reload,
 			'-i': self.ignore,
 			'-a': self.show_all_running_apps,
+			'-k': self.show_only_apps_not_ignored,
+			'-n': self.show_active_sessions,
 			'-la': self.list_active_sessions,
 			'-d' : self.decouple_apps_from_tabs
 		}
@@ -263,7 +286,6 @@ if __name__ == "__main__":
 			argument2 = sys.argv[3]
 		except:
 			print('Something is wrong with the command format')
-			print(sys.argv)
 			sys.exit(0)
 		
 		try:
