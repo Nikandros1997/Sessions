@@ -145,7 +145,6 @@ class App():
 				os.chdir(current_directory)
 
 				if os.path.isfile(self.session_name + '-software.ses'):
-					print('Ignore: ' + application_name)
 
 					apps_to_be_ignored = list()
 
@@ -153,9 +152,11 @@ class App():
 						apps_to_be_ignored = self.load_file('.ignore')
 
 					if not application_name in apps_to_be_ignored:
+						print('Ignore: ' + application_name)
 						apps_to_be_ignored.append(application_name)
 					else:
-						print('Application is already ignored')
+						print(application_name + ' won\'t be ingored anymore.')
+						apps_to_be_ignored.remove(application_name)
 
 					self.save_file('.ignore', apps_to_be_ignored)
 
@@ -182,23 +183,7 @@ class App():
 				running_apps.append(z)
 
 		return running_apps
-    
-	'''
-		TODO: DEPRECATE
-	'''
-	def installed_apps(self):
-		apps_location = '/Users/nikandrosmavroudakis'
 
-		os.chdir(apps_location)
-
-		return [f.split('.')[0].lower() for f in os.listdir('/Applications') if '.app' in f]
-
-	'''
-		TODO: DEPRECATE
-	'''
-	def running_processes(self):
-		return [proc.info['name'].lower() for proc in psutil.process_iter(attrs=['pid', 'name'])]
-	
 	def show_all_running_apps(self, placeholder=None):
 		apps_to_be_ignored = self.load_file('.ignore')
 
@@ -239,8 +224,6 @@ class App():
 				open(self.session_name + '-browser.ses', 'w')
 			else:
 				print('no changes applied')
-
-
 
 	def func_switch(self, argument, passing=None):
 		switcher = {
