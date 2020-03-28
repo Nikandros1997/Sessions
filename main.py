@@ -6,6 +6,10 @@ class App():
 		self.session_name = session_name
 
 	def save_tabs(self):
+
+		if not self.can_store_tabs():
+			return
+
 		text_in_clipboard = clipboard.paste()
 		os.chdir(current_directory)
 		with open(self.session_name + '-browser.ses', "w") as text_file:
@@ -13,6 +17,9 @@ class App():
 		os.chdir(current_directory)
 
 	def reload_tabs(self):
+		if not self.can_store_tabs():
+			return
+
 		os.chdir(current_directory)
 		with open(self.session_name + '-browser.ses', "r") as text_file:
 			for l in text_file:
@@ -80,27 +87,33 @@ class App():
 
 		return len(links) > 3
 
+	def can_store_tabs(self):
+		os.chdir(current_directory)
+
+		return os.path.isfile(self.session_name + '-software.ses') and os.path.isfile(self.session_name + '-browser.ses') or not os.path.isfile(self.session_name + '-software.ses') and not os.path.isfile(self.session_name + '-browser.ses')
+
 	def save(self):
 		if self.session_name == '':
 			print('Error: session -s [name]')
 			return
-
-		# print(self.running_apps())
-		# return
-
-		if not os.path.isfile('.ignore'):
-			print('Create an ignore file first by running: sh session -i ')
-
-		if(self.verify_clipboard()):
-			self.save_tabs() # works
-			self.save_running_software() # works
-			self.close_apps() # works
-		else:
+		elif self.can_store_tabs() and not self.verify_clipboard():
+			# if not os.path.isfile(self.session_name + '-browser.ses') and 
 			print('Please check your clipboard')
+			return
+		elif not os.path.isfile('.ignore'):
+			print('Create an ignore file first by running: sh session -i ')
+			return
+
+		self.save_tabs() # works
+		self.save_running_software() # works
+		self.close_apps() # works
 
 	def reload(self):
 		if self.session_name == '':
 			print('Error: session -r [name]')
+			return
+		elif not os.path.isfile(self.session_name + '-software.ses'):
+			print('Not anything stored, yet.')
 			return
 
 		self.reload_tabs() # works
@@ -155,6 +168,7 @@ class App():
 					print('Session not registered.')
 			else:
 				print('You can ignore apps that are currently running.')
+				print(app_to_ignore)
 
 	def running_apps(self):
 		output = subprocess.check_output('ps aux|grep ^nikandrosmavroudakis | grep /Applications', shell=True)
@@ -202,13 +216,40 @@ class App():
 		for session in application_folder:
 			print(session)
 
+	def decouple_apps_from_tabs(self):
+
+		os.chdir(current_directory)
+
+		# if browser file exists
+		if self.can_store_tabs():
+			print('Are you sure that you don\'t want to store the browser\'s tabs anymore?')
+			asdf = input()
+			if asdf == 'y':
+				if os.path.isfile(self.session_name + '-browser.ses'):
+					os.remove(self.session_name + '-browser.ses')
+				else:
+					open(self.session_name + '-software.ses', 'w')
+			else:
+				print('no changes applied')
+		# else if browser file does not exist
+		else:
+			print('Do you want to start being able to store the browser\'s tabs in the session?')
+			asdf = input()
+			if asdf == 'y':
+				open(self.session_name + '-browser.ses', 'w')
+			else:
+				print('no changes applied')
+
+
+
 	def func_switch(self, argument, passing=None):
 		switcher = {
 			'-s': self.save,
 			'-r': self.reload,
 			'-i': self.ignore,
 			'-a': self.show_all_running_apps,
-			'-la': self.list_active_sessions
+			'-la': self.list_active_sessions,
+			'-d' : self.decouple_apps_from_tabs
 		}
 		# Get the function from switcher dictionary
 		func = switcher.get(argument, lambda: "nothing")
@@ -239,6 +280,7 @@ if __name__ == "__main__":
 			argument2 = sys.argv[3]
 		except:
 			print('Something is wrong with the command format')
+			print(sys.argv)
 			sys.exit(0)
 		
 		try:

@@ -19,3 +19,4 @@ Options | What it does
 -**i** [app_name] -**n** [session_name] | ignores from storing an app in a session with name [app_name], when no [app_name] is provided lists all running apps
 -**a** | shows all running apps
 -**la** | lists all active sessions
+-**d** | decouples storage of apps from browser tabs
