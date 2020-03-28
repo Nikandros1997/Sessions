@@ -21,4 +21,4 @@ Options | What it does
 -**la** | lists all active sessions
 -**d** | decouples storage of apps from browser tabs  
 
-**If you want to extend the autocompletion feature and you don't know where to start from, I used [this](https://iridakos.com/programming/2018/03/01/bash-programmable-completion-tutorial) to make a start and then extend your knowledge as it goes.**
+**If you want to extend the autocompletion feature and you don't know where to start from, use [this](https://iridakos.com/programming/2018/03/01/bash-programmable-completion-tutorial) to make a start and then extend your knowledge as it goes.**
