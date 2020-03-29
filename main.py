@@ -249,17 +249,28 @@ class App():
 			formatted_string += session + ','
 		print(formatted_string)
 
+	def help(self):
+		print('-s [ssn_n]\t: store a new or update an existing session')
+		print('-r [ssn_n]\t: restores a stored session')
+		print()
+		print('-i [app_n] -n [ssn_n]\t: ignores an app for a specific session')
+		print()
+		print('-d\t: decouples storage of apps from browser tabs')
+		print('-a\t: displays all the running applications')
+		print('-la\t: displays all the active sessions')
+
 
 	def func_switch(self, argument, passing=None):
 		switcher = {
-			'-s': self.save,
-			'-r': self.reload,
-			'-i': self.ignore,
-			'-a': self.show_all_running_apps,
-			'-k': self.show_only_apps_not_ignored,
-			'-n': self.show_active_sessions,
+			'-s' : self.save,
+			'-r' : self.reload,
+			'-i' : self.ignore,
+			'-a' : self.show_all_running_apps,
+			'-k' : self.show_only_apps_not_ignored,
+			'-n' : self.show_active_sessions,
 			'-la': self.list_active_sessions,
-			'-d' : self.decouple_apps_from_tabs
+			'-d' : self.decouple_apps_from_tabs,
+			'-h' : self.help,
 		}
 		# Get the function from switcher dictionary
 		func = switcher.get(argument, lambda: "nothing")
