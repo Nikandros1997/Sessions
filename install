@@ -1,10 +1,10 @@
+# Copy folders to an appropriate place
+# cp -r directory-name-1 directory-name-2 # copy directory and all of its contents
+
 echo '' >> ~/.zshrc
 echo '# Session Intallation' >> ~/.zshrc
 echo 'export PATH=/Users/nikandrosmavroudakis/Documents/Projects/Session:$PATH' >> ~/.zshrc
 echo 'source ~/Documents/Projects/Session/tab-completion.bash' >> ~/.zshrc
-
-# Copy folders to an appropriate place
-# cp -r directory-name-1 directory-name-2 # copy directory and all of its contents
 
 echo 'Installation completed.'
 source ~/.zshrc

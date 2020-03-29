@@ -29,13 +29,7 @@ class App():
 		os.chdir(current_directory)
 
 	def save_running_software(self):
-		# apps_location = '/Users/nikandrosmavroudakis'
-
-		# os.chdir(apps_location)
-
-		# application_folder = os.listdir('/Applications')
-
-		# # Removing The Extension From The App Name
+		# Removing The Extension From The App Name
 		# application_folder = [f.split('.')[0] for f in application_folder if '.app' in f]
 		ignored_apps = list()
 		print(current_directory)
