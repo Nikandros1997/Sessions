@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 _session_completions()
 {
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
