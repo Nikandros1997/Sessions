@@ -1,14 +1,16 @@
 #/usr/bin/env bash
 _session_completions()
 {
-  if [ "${COMP_WORDS[COMP_CWORD-1]}" == "-i" ]
-  then
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+  COMPREPLY=()
+  if [ ${prev} == "-i" ]; then
     local IFS=$','
     COMPREPLY=($(compgen -W "$(python3 main.py -k)"))
-  elif [ "${COMP_WORDS[COMP_CWORD-1]}" == "-s" ] || [ "${COMP_WORDS[COMP_CWORD-1]}" == "-r" ] || [ "${COMP_WORDS[COMP_CWORD-1]}" == "-n" ]
-  then
+    return 0
+  elif [[ ${prev} == "-s" || ${prev} == "-r" || ${prev} == "-n" ]]; then
     local IFS=$','
     COMPREPLY=($(compgen -W "$(python3 main.py -n)"))
+    return 0
   fi
 
 }
