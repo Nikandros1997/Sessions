@@ -1,0 +1,9 @@
+echo '' >> ~/.zshrc
+echo '# Session Intallation' >> ~/.zshrc
+echo 'export PATH=/Users/nikandrosmavroudakis/Documents/Projects/Session:$PATH' >> ~/.zshrc
+echo 'source ~/Documents/Projects/Session/tab-completion.bash' >> ~/.zshrc
+
+# Copy folders to an appropriate place
+
+echo 'Installation completed.'
+source ~/.zshrc
