@@ -1,6 +1,8 @@
 import os, sys, webbrowser, pathlib, clipboard, psutil, subprocess
 
-current_directory = os.getcwd()
+current_directory = pathlib.Path(__file__).parent.absolute()
+
+# print(pathlib.Path(__file__).parent.absolute())
 class App():
 	def __init__(self, session_name):
 		self.session_name = session_name
@@ -27,16 +29,16 @@ class App():
 		os.chdir(current_directory)
 
 	def save_running_software(self):
-		apps_location = '/Users/nikandrosmavroudakis'
+		# apps_location = '/Users/nikandrosmavroudakis'
 
-		os.chdir(apps_location)
+		# os.chdir(apps_location)
 
-		application_folder = os.listdir('/Applications')
+		# application_folder = os.listdir('/Applications')
 
-		# Removing The Extension From The App Name
-		application_folder = [f.split('.')[0] for f in application_folder if '.app' in f]
+		# # Removing The Extension From The App Name
+		# application_folder = [f.split('.')[0] for f in application_folder if '.app' in f]
 		ignored_apps = list()
-
+		print(current_directory)
 		os.chdir(current_directory)
 
 		if os.path.isfile('.ignore'):
@@ -121,6 +123,8 @@ class App():
 
 	def load_file(self, file_name):
 		loaded_from_file = list()
+		os.chdir(current_directory)
+		
 
 		with open(file_name, "r") as text_file:
 			for application in text_file:
