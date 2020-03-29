@@ -10,7 +10,7 @@ _session_completions()
     return 0
   elif [[ ${prev} == "-s" || ${prev} == "-r" || ${prev} == "-n" ]]; then
     local IFS=$','
-    COMPREPLY=($(compgen -W "$(python3 ~/Documents/Projects/Session/main.py -n)"))
+    COMPREPLY=($(compgen -W "$(python3 ${main_path}/main.py -n)"))
     return 0
   fi
 
